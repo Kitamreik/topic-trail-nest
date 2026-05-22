@@ -363,7 +363,7 @@ export default function Webmaster() {
           <DialogHeader><DialogTitle>Create New User</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2"><Label>Full Name</Label><Input placeholder="Jane Doe" value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>Email</Label><Input type="email" placeholder="jane@university.edu" value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Email</Label><Input type="email" placeholder="jane@cookielms.dev" value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} /></div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label>Password</Label>
