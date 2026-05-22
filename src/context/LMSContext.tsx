@@ -200,11 +200,11 @@ const now = () => new Date().toISOString();
 const STORAGE_KEY = "academic-stream-lms";
 
 const defaultStudents: Student[] = [
-  { id: "s1", name: "Alice Johnson", email: "alice@university.edu" },
-  { id: "s2", name: "Bob Smith", email: "bob@university.edu" },
-  { id: "s3", name: "Carol Davis", email: "carol@university.edu" },
-  { id: "s4", name: "David Lee", email: "david@university.edu" },
-  { id: "s5", name: "Emma Wilson", email: "emma@university.edu" },
+  { id: "s1", name: "Alice Johnson", email: "alice@cookielms.dev" },
+  { id: "s2", name: "Bob Smith", email: "bob@cookielms.dev" },
+  { id: "s3", name: "Carol Davis", email: "carol@cookielms.dev" },
+  { id: "s4", name: "David Lee", email: "david@cookielms.dev" },
+  { id: "s5", name: "Emma Wilson", email: "emma@cookielms.dev" },
 ];
 
 const defaultTopics: Topic[] = [
