@@ -175,6 +175,7 @@ export default function Webmaster() {
   // Create user state
   const [createOpen, setCreateOpen] = useState(false);
   const [createForm, setCreateForm] = useState({ name: "", email: "", password: "", role: "student" as UserRole });
+  const [showCreatePassword, setShowCreatePassword] = useState(false);
 
   // Platform settings
   const [demoEnabled, setDemoEnabledState] = useState<boolean>(() => getDemoAccountsEnabled());
