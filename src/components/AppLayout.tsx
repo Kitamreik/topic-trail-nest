@@ -5,6 +5,7 @@ import { NotificationPanel } from "@/components/NotificationPanel";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { AppFooter } from "@/components/AppFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useSemester } from "@/context/SemesterContext";
 import { Badge } from "@/components/ui/badge";
