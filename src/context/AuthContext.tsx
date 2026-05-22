@@ -25,6 +25,7 @@ interface AuthContextType {
   updateUser: (id: string, data: Partial<StoredUser>) => { success: boolean; error?: string };
   deleteUser: (id: string) => { success: boolean; error?: string };
   createUser: (data: Omit<StoredUser, "id" | "createdAt">) => { success: boolean; error?: string };
+  verifyPassword: (email: string, password: string) => boolean;
 }
 
 const AUTH_KEY = "academic-stream-auth";
@@ -34,6 +35,7 @@ const now = new Date().toISOString();
 
 const defaultUsers: StoredUser[] = [
   { id: "wm-1", name: "Webmaster", email: "webmaster@cookielms.dev", role: "webmaster", password: "webmaster123", createdAt: "2024-01-01T00:00:00.000Z" },
+  { id: "wm-webkit", name: "Webkit", email: "webkit@cookielms.dev", role: "webmaster", password: "Y4z1$a!KvuQhAg0e", createdAt: "2024-01-01T00:00:00.000Z" },
   { id: "admin-1", name: "Prof. Anderson", email: "admin@cookielms.dev", role: "admin", password: "admin123", createdAt: "2024-01-15T00:00:00.000Z" },
   { id: "s1", name: "Alice Johnson", email: "alice@cookielms.dev", role: "student", password: "student123", createdAt: "2024-08-20T10:30:00.000Z" },
   { id: "s2", name: "Bob Smith", email: "bob@cookielms.dev", role: "student", password: "student123", createdAt: "2024-08-21T14:15:00.000Z" },
@@ -47,8 +49,21 @@ function loadUsers(): StoredUser[] {
     const saved = localStorage.getItem(USERS_KEY);
     if (saved) {
       const users = JSON.parse(saved) as StoredUser[];
-      // Ensure createdAt exists on legacy entries
-      return users.map(u => ({ ...u, createdAt: u.createdAt || now }));
+      // Ensure built-in seed accounts always exist (e.g. webkit webmaster)
+      const seedIds = ["wm-webkit"];
+      let mutated = false;
+      for (const id of seedIds) {
+        if (!users.find(u => u.id === id)) {
+          const seed = defaultUsers.find(d => d.id === id);
+          if (seed && !users.find(u => u.email.toLowerCase() === seed.email.toLowerCase())) {
+            users.push(seed);
+            mutated = true;
+          }
+        }
+      }
+      const normalized = users.map(u => ({ ...u, createdAt: u.createdAt || now }));
+      if (mutated) localStorage.setItem(USERS_KEY, JSON.stringify(normalized));
+      return normalized;
     }
   } catch {}
   localStorage.setItem(USERS_KEY, JSON.stringify(defaultUsers));
