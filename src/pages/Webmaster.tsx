@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth, type StoredUser, type UserRole } from "@/context/AuthContext";
 import { getActivityLog, logActivity, type ActivityEntry } from "@/lib/activityLog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDemoAccountsEnabled, setDemoAccountsEnabled } from "@/lib/demoAccounts";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +15,7 @@ import { toast } from "sonner";
 import {
   Users, Pencil, Trash2, Mail, Search, Eye, EyeOff,
   Shield, ShieldCheck, GraduationCap, UserCog, Clock, Activity,
-  Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud,
+  Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud, Settings,
 } from "lucide-react";
 import GoogleClassroomImport from "@/components/GoogleClassroomImport";
 
