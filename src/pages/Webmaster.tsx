@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import {
-  Users, Pencil, Trash2, Mail, Search, Eye, EyeOff,
+  Users, Pencil, Trash2, Mail, Search,
   Shield, ShieldCheck, GraduationCap, UserCog, Clock, Activity,
   Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud, Settings,
 } from "lucide-react";
