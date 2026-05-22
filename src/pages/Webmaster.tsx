@@ -153,6 +153,26 @@ export default function Webmaster() {
   const [createOpen, setCreateOpen] = useState(false);
   const [createForm, setCreateForm] = useState({ name: "", email: "", password: "", role: "student" as UserRole });
 
+  // Platform settings
+  const [demoEnabled, setDemoEnabledState] = useState<boolean>(() => getDemoAccountsEnabled());
+  useEffect(() => {
+    const handler = () => setDemoEnabledState(getDemoAccountsEnabled());
+    window.addEventListener("demo-accounts-changed", handler);
+    return () => window.removeEventListener("demo-accounts-changed", handler);
+  }, []);
+  const toggleDemo = (next: boolean) => {
+    setDemoEnabled(next);
+    setDemoEnabledState(next);
+    logActivity({
+      action: "user_edit",
+      actor: currentUser?.name || "Webmaster",
+      actorRole: currentUser?.role || "webmaster",
+      details: `${next ? "Enabled" : "Disabled"} demo accounts on login page`,
+    });
+    setActivityLog(getActivityLog());
+    toast.success(`Demo accounts ${next ? "enabled" : "disabled"} on login page`);
+  };
+
   const refresh = () => { setUsers(getAllUsers()); setActivityLog(getActivityLog()); };
 
   const filtered = users.filter(u => {
