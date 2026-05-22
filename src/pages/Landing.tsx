@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { GraduationCap, BookOpen, MessageCircle, Bell, BarChart3, Calendar, FolderOpen, Shield } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AppFooter } from "@/components/AppFooter";
 
 const features = [
   { icon: BookOpen, title: "Course Topics", desc: "Organized course materials with rich content and file attachments." },
