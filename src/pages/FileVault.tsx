@@ -20,6 +20,7 @@ import { Upload, Link as LinkIcon, Trash2, FileText, FolderOpen, ExternalLink } 
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { FilePreview } from "@/components/FilePreview";
+import { isSafeUrl, safeOpen } from "@/lib/urlSafety";
 
 export default function FileVault() {
   const { vaultFiles, addVaultFile, deleteVaultFile, students } = useLMS();
@@ -42,6 +43,10 @@ export default function FileVault() {
 
   const handleAddLink = () => {
     if (!linkUrl.trim() || !linkTitle.trim() || !studentId) return;
+    if (!isSafeUrl(linkUrl)) {
+      toast.error("Only http:// or https:// URLs are allowed.");
+      return;
+    }
     addVaultFile({
       studentId,
       semesterId: activeSemester.id,
@@ -151,7 +156,11 @@ export default function FileVault() {
                           <Button
                             variant="ghost" size="sm"
                             className="h-7 text-xs gap-1"
-                            onClick={() => window.open(file.fileUrl, "_blank")}
+                            onClick={() => {
+                              if (!safeOpen(file.fileUrl)) {
+                                toast.error("Blocked: unsafe URL scheme.");
+                              }
+                            }}
                           >
                             <ExternalLink className="h-3.5 w-3.5" /> Open
                           </Button>

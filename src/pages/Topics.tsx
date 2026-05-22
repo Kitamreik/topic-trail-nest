@@ -16,6 +16,8 @@ import {
 import { Plus, Link as LinkIcon, FileText, Image, Type, Trash2, ExternalLink, GripVertical } from "lucide-react";
 import { format } from "date-fns";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { isSafeUrl } from "@/lib/urlSafety";
+import { toast } from "sonner";
 
 export default function Topics() {
   const { topics, addTopic, addContentToTopic, removeContentFromTopic, reorderTopics, reorderContent } = useLMS();
@@ -47,10 +49,15 @@ export default function Topics() {
 
   const handleAddContent = (topicId: string) => {
     if (!contentTitle.trim()) return;
+    const url = contentUrl.trim();
+    if (url && !isSafeUrl(url)) {
+      toast.error("Only http:// or https:// URLs are allowed.");
+      return;
+    }
     addContentToTopic(topicId, {
       type: contentType,
       title: contentTitle.trim(),
-      url: contentUrl.trim() || undefined,
+      url: url || undefined,
       description: contentDesc.trim() || undefined,
     });
     setContentTitle("");
@@ -169,7 +176,7 @@ export default function Topics() {
                         <p className="text-[10px] text-muted-foreground">{format(new Date(c.createdAt), "MMM d, yyyy")}</p>
                       </div>
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        {c.url && (
+                        {c.url && isSafeUrl(c.url) && (
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button variant="ghost" size="icon" asChild className="h-7 w-7">
