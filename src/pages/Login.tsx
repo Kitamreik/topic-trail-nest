@@ -232,14 +232,12 @@ export default function Login() {
               {mode === "signup" && (
                 <div className="space-y-2">
                   <Label>Role</Label>
-                  <Select value={role} onValueChange={(v) => setRole(v as UserRole)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="student">Student</SelectItem>
-                      <SelectItem value="admin">Admin / Instructor</SelectItem>
-                      <SelectItem value="webmaster">Webmaster</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="text-sm text-muted-foreground bg-muted/50 rounded-md px-3 py-2 border">
+                    Student
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    All new accounts are created as students. Elevated roles (admin, webmaster) must be granted by an existing webmaster.
+                  </p>
                 </div>
               )}
 
