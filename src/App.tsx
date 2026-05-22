@@ -28,6 +28,7 @@ import FileVault from "./pages/FileVault";
 import Exams from "./pages/Exams";
 import Chat from "./pages/Chat";
 import ClaimInvite from "./pages/ClaimInvite";
+import ClassroomImports from "./pages/ClassroomImports";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,13 @@ function WebmasterRoute({ children }: { children: React.ReactNode }) {
   const { user, isWebmaster } = useAuth();
   if (!user) return <Navigate to="/" replace />;
   if (!isWebmaster) return <Navigate to="/dashboard" replace />;
+  return <>{children}</>;
+}
+
+function AdminOrWebmasterRoute({ children }: { children: React.ReactNode }) {
+  const { user, isAdmin, isWebmaster } = useAuth();
+  if (!user) return <Navigate to="/" replace />;
+  if (!isAdmin && !isWebmaster) return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }
 
@@ -137,6 +145,11 @@ function AppRoutes() {
             <WebmasterRoute>
               <AppLayout><Webmaster /></AppLayout>
             </WebmasterRoute>
+          } />
+          <Route path="/classroom-imports" element={
+            <AdminOrWebmasterRoute>
+              <AppLayout><ClassroomImports /></AppLayout>
+            </AdminOrWebmasterRoute>
           } />
           <Route path="*" element={<NotFound />} />
         </Routes>
