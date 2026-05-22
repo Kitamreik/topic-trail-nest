@@ -25,7 +25,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 h-14">
           <div className="flex items-center gap-2">
             <GraduationCap className="h-6 w-6 text-primary" />
-            <span className="font-bold text-lg">Academic Stream</span>
+            <span className="font-bold text-base sm:text-lg leading-tight">Kit TJ Services <span className="hidden sm:inline text-muted-foreground font-normal">— Learning with Cookie</span></span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
