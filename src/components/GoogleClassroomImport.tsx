@@ -23,6 +23,8 @@ import {
   Megaphone, ArrowLeft, AlertTriangle, Wand2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { recordImport } from "@/lib/classroomImportHistory";
+import { useAuth } from "@/context/AuthContext";
 
 type Step = "auth" | "select" | "preview" | "done";
 
@@ -111,6 +113,7 @@ const STATUS_STYLES: Record<string, string> = {
 export default function GoogleClassroomImport() {
   const { bulkImport, previewImport } = useLMS();
   const { semesters, activeSemester } = useSemester();
+  const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("auth");
@@ -332,6 +335,19 @@ export default function GoogleClassroomImport() {
       const changed = result.topics.created + result.topics.updated +
         result.assignments.created + result.assignments.updated +
         result.announcements.created + result.announcements.updated;
+      const sem = semesters.find(s => s.id === targetSemesterId);
+      const ids = Array.from(selectedCourseIds);
+      recordImport({
+        actor: user?.name ?? "Unknown",
+        semesterId: targetSemesterId,
+        semesterName: sem?.name ?? targetSemesterId,
+        mode,
+        courses: ids.map(id => {
+          const c = courses.find(x => x.id === id);
+          return { id, name: c?.name ?? id };
+        }),
+        result,
+      });
       toast.success(`Import complete — ${changed} item${changed === 1 ? "" : "s"} written.`);
     }
     setLoading(false);
