@@ -473,6 +473,26 @@ export default function Webmaster() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ReauthDialog
+        open={!!reauthTarget}
+        onOpenChange={(o) => { if (!o) setReauthTarget(null); }}
+        targetName={reauthTarget?.name || ""}
+        onVerified={() => {
+          if (reauthTarget) {
+            setShowPasswords(p => ({ ...p, [reauthTarget.id]: true }));
+            logActivity({
+              action: "user_edit",
+              actor: currentUser?.name || "Unknown",
+              actorRole: currentUser?.role || "unknown",
+              target: reauthTarget.name,
+              details: `Revealed stored password for ${reauthTarget.email}`,
+            });
+            setActivityLog(getActivityLog());
+            setReauthTarget(null);
+          }
+        }}
+      />
     </div>
   );
 }
