@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import GoogleClassroomImport from "@/components/GoogleClassroomImport";
 import FirebaseSettings from "@/components/FirebaseSettings";
+import OtpWebhookSettings from "@/components/OtpWebhookSettings";
 import MagicLinksManager from "@/components/MagicLinksManager";
 import ReauthDialog from "@/components/ReauthDialog";
 
@@ -325,6 +326,8 @@ export default function Webmaster() {
               </div>
             </CardContent>
           </Card>
+
+          <OtpWebhookSettings />
 
           <FirebaseSettings />
         </TabsContent>
