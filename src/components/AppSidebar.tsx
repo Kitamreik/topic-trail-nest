@@ -73,12 +73,13 @@ export function AppSidebar() {
       <SidebarContent className="bg-sidebar flex flex-col">
         <div className="px-4 py-5">
           {!collapsed && (
-            <h1 className="font-display text-lg font-bold text-sidebar-foreground tracking-tight">
-              Academic Stream
+            <h1 className="font-display text-lg font-bold text-sidebar-foreground tracking-tight leading-tight">
+              Kit TJ Services
+              <span className="block text-xs font-medium text-sidebar-foreground/70">Learning with Cookie</span>
             </h1>
           )}
           {collapsed && (
-            <span className="font-display text-lg font-bold text-sidebar-foreground">AS</span>
+            <span className="font-display text-lg font-bold text-sidebar-foreground">KT</span>
           )}
         </div>
 
