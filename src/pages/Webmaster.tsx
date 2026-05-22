@@ -18,6 +18,7 @@ import {
   Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud, Settings,
 } from "lucide-react";
 import GoogleClassroomImport from "@/components/GoogleClassroomImport";
+import FirebaseSettings from "@/components/FirebaseSettings";
 
 function RoleIcon({ role }: { role: UserRole }) {
   switch (role) {
@@ -287,6 +288,8 @@ export default function Webmaster() {
               </div>
             </CardContent>
           </Card>
+
+          <FirebaseSettings />
         </TabsContent>
 
         <TabsContent value="import" className="mt-4 space-y-4">
