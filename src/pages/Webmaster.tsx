@@ -160,7 +160,16 @@ export default function Webmaster() {
   const [editForm, setEditForm] = useState({ name: "", email: "", password: "", role: "student" as UserRole });
   const [deleteConfirm, setDeleteConfirm] = useState<StoredUser | null>(null);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
+  const [reauthTarget, setReauthTarget] = useState<StoredUser | null>(null);
   const [activityLog, setActivityLog] = useState<ActivityEntry[]>(() => getActivityLog());
+
+  const requestTogglePassword = (u: StoredUser) => {
+    if (showPasswords[u.id]) {
+      setShowPasswords(p => ({ ...p, [u.id]: false }));
+    } else {
+      setReauthTarget(u);
+    }
+  };
 
   // Create user state
   const [createOpen, setCreateOpen] = useState(false);
