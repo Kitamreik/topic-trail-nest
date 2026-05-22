@@ -160,6 +160,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { success: true };
   };
 
+  const verifyPassword = (email: string, password: string) => {
+    const users = loadUsers();
+    return users.some(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -167,7 +172,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isStudent: user?.role === "student",
       isWebmaster: user?.role === "webmaster",
       login, signup, logout,
-      getAllUsers, updateUser, deleteUser, createUser,
+      getAllUsers, updateUser, deleteUser, createUser, verifyPassword,
     }}>
       {children}
     </AuthContext.Provider>
