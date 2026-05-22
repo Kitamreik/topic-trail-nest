@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth, type UserRole } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,23 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { GraduationCap, AlertCircle, ShieldCheck, RefreshCw, Eye, EyeOff } from "lucide-react";
+import { AppFooter } from "@/components/AppFooter";
+import { getDemoAccountsEnabled } from "@/lib/demoAccounts";
 
 export default function Login() {
   const { login, signup } = useAuth();
   const [mode, setMode] = useState<"login" | "signup">("login");
+  const [demoEnabled, setDemoEnabled] = useState<boolean>(() => getDemoAccountsEnabled());
+
+  useEffect(() => {
+    const handler = () => setDemoEnabled(getDemoAccountsEnabled());
+    window.addEventListener("demo-accounts-changed", handler);
+    window.addEventListener("storage", handler);
+    return () => {
+      window.removeEventListener("demo-accounts-changed", handler);
+      window.removeEventListener("storage", handler);
+    };
+  }, []);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
