@@ -465,7 +465,12 @@ export default function Webmaster() {
                   <RefreshCw className="h-3 w-3" /> Generate
                 </button>
               </div>
-              <Input value={createForm.password} onChange={e => setCreateForm(f => ({ ...f, password: e.target.value }))} />
+              <div className="relative">
+                <Input type={showCreatePassword ? "text" : "password"} value={createForm.password} onChange={e => setCreateForm(f => ({ ...f, password: e.target.value }))} className="pr-10" />
+                <button type="button" onClick={() => setShowCreatePassword(s => !s)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" aria-label={showCreatePassword ? "Hide password" : "Show password"}>
+                  {showCreatePassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
             <div className="space-y-2">
               <Label>Role</Label>
