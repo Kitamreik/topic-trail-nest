@@ -113,7 +113,7 @@ export default function Login() {
     } else {
       if (!name.trim()) { setError("Name is required"); return; }
       triggerTwoFA(() => {
-        const result = signup(name.trim(), email, password, role);
+        const result = signup(name.trim(), email, password, "student");
         if (!result.success) setError(result.error || "Signup failed");
       });
     }
