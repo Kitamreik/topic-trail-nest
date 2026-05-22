@@ -33,13 +33,13 @@ const USERS_KEY = "academic-stream-users";
 const now = new Date().toISOString();
 
 const defaultUsers: StoredUser[] = [
-  { id: "wm-1", name: "Webmaster", email: "webmaster@university.edu", role: "webmaster", password: "webmaster123", createdAt: "2024-01-01T00:00:00.000Z" },
-  { id: "admin-1", name: "Prof. Anderson", email: "admin@university.edu", role: "admin", password: "admin123", createdAt: "2024-01-15T00:00:00.000Z" },
-  { id: "s1", name: "Alice Johnson", email: "alice@university.edu", role: "student", password: "student123", createdAt: "2024-08-20T10:30:00.000Z" },
-  { id: "s2", name: "Bob Smith", email: "bob@university.edu", role: "student", password: "student123", createdAt: "2024-08-21T14:15:00.000Z" },
-  { id: "s3", name: "Carol Davis", email: "carol@university.edu", role: "student", password: "student123", createdAt: "2024-08-22T09:00:00.000Z" },
-  { id: "s4", name: "David Lee", email: "david@university.edu", role: "student", password: "student123", createdAt: "2024-08-25T11:45:00.000Z" },
-  { id: "s5", name: "Emma Wilson", email: "emma@university.edu", role: "student", password: "student123", createdAt: "2024-09-01T08:00:00.000Z" },
+  { id: "wm-1", name: "Webmaster", email: "webmaster@cookielms.dev", role: "webmaster", password: "webmaster123", createdAt: "2024-01-01T00:00:00.000Z" },
+  { id: "admin-1", name: "Prof. Anderson", email: "admin@cookielms.dev", role: "admin", password: "admin123", createdAt: "2024-01-15T00:00:00.000Z" },
+  { id: "s1", name: "Alice Johnson", email: "alice@cookielms.dev", role: "student", password: "student123", createdAt: "2024-08-20T10:30:00.000Z" },
+  { id: "s2", name: "Bob Smith", email: "bob@cookielms.dev", role: "student", password: "student123", createdAt: "2024-08-21T14:15:00.000Z" },
+  { id: "s3", name: "Carol Davis", email: "carol@cookielms.dev", role: "student", password: "student123", createdAt: "2024-08-22T09:00:00.000Z" },
+  { id: "s4", name: "David Lee", email: "david@cookielms.dev", role: "student", password: "student123", createdAt: "2024-08-25T11:45:00.000Z" },
+  { id: "s5", name: "Emma Wilson", email: "emma@cookielms.dev", role: "student", password: "student123", createdAt: "2024-09-01T08:00:00.000Z" },
 ];
 
 function loadUsers(): StoredUser[] {
