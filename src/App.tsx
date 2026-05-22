@@ -27,6 +27,7 @@ import Webmaster from "./pages/Webmaster";
 import FileVault from "./pages/FileVault";
 import Exams from "./pages/Exams";
 import Chat from "./pages/Chat";
+import ClaimInvite from "./pages/ClaimInvite";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,7 @@ function AppRoutes() {
           <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
           <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
           <Route path="/reset-password" element={user ? <Navigate to="/dashboard" replace /> : <ResetPassword />} />
+          <Route path="/claim-invite" element={<ClaimInvite />} />
 
           {/* Protected routes */}
           <Route path="/dashboard" element={

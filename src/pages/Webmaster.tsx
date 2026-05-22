@@ -15,10 +15,12 @@ import { toast } from "sonner";
 import {
   Users, Pencil, Trash2, Mail, Search,
   Shield, ShieldCheck, GraduationCap, UserCog, Clock, Activity,
-  Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud, Settings,
+  Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud, Settings, Sparkles, Eye, EyeOff,
 } from "lucide-react";
 import GoogleClassroomImport from "@/components/GoogleClassroomImport";
 import FirebaseSettings from "@/components/FirebaseSettings";
+import MagicLinksManager from "@/components/MagicLinksManager";
+import ReauthDialog from "@/components/ReauthDialog";
 
 function RoleIcon({ role }: { role: UserRole }) {
   switch (role) {
@@ -106,9 +108,22 @@ function UserCard({
                 </span>
               </div>
               <div className="flex items-center gap-1.5 mt-2">
-                <span className="text-[11px] text-muted-foreground">
-                  Password hidden — use “Reset password” to issue a new one.
-                </span>
+                {showPassword ? (
+                  <code className="text-[11px] bg-muted px-2 py-0.5 rounded font-mono break-all">
+                    {user.password}
+                  </code>
+                ) : (
+                  <span className="text-[11px] text-muted-foreground">Password hidden</span>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6"
+                  onClick={onTogglePassword}
+                  title={showPassword ? "Hide password" : "Reveal password (re-auth required)"}
+                >
+                  {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                </Button>
               </div>
             </div>
           </div>
