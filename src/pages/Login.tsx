@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth, type UserRole } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,23 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { GraduationCap, AlertCircle, ShieldCheck, RefreshCw, Eye, EyeOff } from "lucide-react";
+import { AppFooter } from "@/components/AppFooter";
+import { getDemoAccountsEnabled } from "@/lib/demoAccounts";
 
 export default function Login() {
   const { login, signup } = useAuth();
   const [mode, setMode] = useState<"login" | "signup">("login");
+  const [demoEnabled, setDemoEnabled] = useState<boolean>(() => getDemoAccountsEnabled());
+
+  useEffect(() => {
+    const handler = () => setDemoEnabled(getDemoAccountsEnabled());
+    window.addEventListener("demo-accounts-changed", handler);
+    window.addEventListener("storage", handler);
+    return () => {
+      window.removeEventListener("demo-accounts-changed", handler);
+      window.removeEventListener("storage", handler);
+    };
+  }, []);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -79,13 +92,13 @@ export default function Login() {
       // If no users in storage, check against defaults
       if (users.length === 0) {
         users = [
-          { email: "webmaster@university.edu", password: "webmaster123" },
-          { email: "admin@university.edu", password: "admin123" },
-          { email: "alice@university.edu", password: "student123" },
-          { email: "bob@university.edu", password: "student123" },
-          { email: "carol@university.edu", password: "student123" },
-          { email: "david@university.edu", password: "student123" },
-          { email: "emma@university.edu", password: "student123" },
+          { email: "webmaster@cookielms.dev", password: "webmaster123" },
+          { email: "admin@cookielms.dev", password: "admin123" },
+          { email: "alice@cookielms.dev", password: "student123" },
+          { email: "bob@cookielms.dev", password: "student123" },
+          { email: "carol@cookielms.dev", password: "student123" },
+          { email: "david@cookielms.dev", password: "student123" },
+          { email: "emma@cookielms.dev", password: "student123" },
         ];
       }
       const found = users.find((u: any) => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
@@ -166,7 +179,8 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex-1 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <div className="flex justify-center">
@@ -174,8 +188,8 @@ export default function Login() {
               <GraduationCap className="h-8 w-8 text-primary" />
             </div>
           </div>
-          <h1 className="font-display text-2xl font-bold">Academic Stream</h1>
-          <p className="text-sm text-muted-foreground">Learning Management System</p>
+          <h1 className="font-display text-2xl font-bold leading-tight">Kit TJ Services</h1>
+          <p className="text-sm text-muted-foreground">Learning with Cookie</p>
         </div>
 
         <Card>
@@ -195,7 +209,7 @@ export default function Login() {
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="you@university.edu" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <Input id="email" type="email" placeholder="you@cookielms.dev" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
 
               <div className="space-y-2">
@@ -256,20 +270,22 @@ export default function Login() {
               )}
             </div>
 
-            <div className="mt-6 border-t border-border pt-4">
-              <p className="text-xs text-muted-foreground text-center mb-3">Demo Accounts</p>
-              <div className="grid grid-cols-3 gap-2">
-                <Button variant="outline" size="sm" className="text-xs" onClick={() => { setEmail("webmaster@university.edu"); setPassword("webmaster123"); setMode("login"); }}>
-                  Webmaster
-                </Button>
-                <Button variant="outline" size="sm" className="text-xs" onClick={() => { setEmail("admin@university.edu"); setPassword("admin123"); setMode("login"); }}>
-                  Admin
-                </Button>
-                <Button variant="outline" size="sm" className="text-xs" onClick={() => { setEmail("alice@university.edu"); setPassword("student123"); setMode("login"); }}>
-                  Student
-                </Button>
+            {demoEnabled && (
+              <div className="mt-6 border-t border-border pt-4">
+                <p className="text-xs text-muted-foreground text-center mb-3">Demo Accounts</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button variant="outline" size="sm" className="text-xs" onClick={() => { setEmail("webmaster@cookielms.dev"); setPassword("webmaster123"); setMode("login"); }}>
+                    Webmaster
+                  </Button>
+                  <Button variant="outline" size="sm" className="text-xs" onClick={() => { setEmail("admin@cookielms.dev"); setPassword("admin123"); setMode("login"); }}>
+                    Admin
+                  </Button>
+                  <Button variant="outline" size="sm" className="text-xs" onClick={() => { setEmail("alice@cookielms.dev"); setPassword("student123"); setMode("login"); }}>
+                    Student
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 
@@ -277,6 +293,8 @@ export default function Login() {
           ⚠️ Mock authentication with 2FA simulation — not secure for production.
         </p>
       </div>
+      </div>
+      <AppFooter />
     </div>
   );
 }

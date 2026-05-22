@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth, type StoredUser, type UserRole } from "@/context/AuthContext";
 import { getActivityLog, logActivity, type ActivityEntry } from "@/lib/activityLog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDemoAccountsEnabled, setDemoAccountsEnabled } from "@/lib/demoAccounts";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +15,7 @@ import { toast } from "sonner";
 import {
   Users, Pencil, Trash2, Mail, Search, Eye, EyeOff,
   Shield, ShieldCheck, GraduationCap, UserCog, Clock, Activity,
-  Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud,
+  Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud, Settings,
 } from "lucide-react";
 import GoogleClassroomImport from "@/components/GoogleClassroomImport";
 
@@ -151,6 +153,26 @@ export default function Webmaster() {
   const [createOpen, setCreateOpen] = useState(false);
   const [createForm, setCreateForm] = useState({ name: "", email: "", password: "", role: "student" as UserRole });
 
+  // Platform settings
+  const [demoEnabled, setDemoEnabledState] = useState<boolean>(() => getDemoAccountsEnabled());
+  useEffect(() => {
+    const handler = () => setDemoEnabledState(getDemoAccountsEnabled());
+    window.addEventListener("demo-accounts-changed", handler);
+    return () => window.removeEventListener("demo-accounts-changed", handler);
+  }, []);
+  const toggleDemo = (next: boolean) => {
+    setDemoAccountsEnabled(next);
+    setDemoEnabledState(next);
+    logActivity({
+      action: "user_edit",
+      actor: currentUser?.name || "Webmaster",
+      actorRole: currentUser?.role || "webmaster",
+      details: `${next ? "Enabled" : "Disabled"} demo accounts on login page`,
+    });
+    setActivityLog(getActivityLog());
+    toast.success(`Demo accounts ${next ? "enabled" : "disabled"} on login page`);
+  };
+
   const refresh = () => { setUsers(getAllUsers()); setActivityLog(getActivityLog()); };
 
   const filtered = users.filter(u => {
@@ -237,7 +259,38 @@ export default function Webmaster() {
           <TabsTrigger value="users" className="gap-1.5"><Users className="h-3.5 w-3.5" /> Users</TabsTrigger>
           <TabsTrigger value="activity" className="gap-1.5"><Activity className="h-3.5 w-3.5" /> Activity Log</TabsTrigger>
           <TabsTrigger value="import" className="gap-1.5"><Cloud className="h-3.5 w-3.5" /> Import</TabsTrigger>
+          <TabsTrigger value="settings" className="gap-1.5"><Settings className="h-3.5 w-3.5" /> Settings</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="settings" className="mt-4 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Settings className="h-4 w-4 text-primary" /> Login Page Settings
+              </CardTitle>
+              <CardDescription>
+                Control what appears on the public sign-in page.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-start justify-between gap-4 rounded-lg border border-border p-4">
+                <div className="space-y-1">
+                  <Label htmlFor="demo-toggle" className="text-sm font-medium">
+                    Show demo account quick-login buttons
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    When enabled, the login page displays one-click buttons for Webmaster, Admin, and Student demo accounts. Disable this for production-like deployments.
+                  </p>
+                </div>
+                <Switch
+                  id="demo-toggle"
+                  checked={demoEnabled}
+                  onCheckedChange={toggleDemo}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="import" className="mt-4 space-y-4">
           <GoogleClassroomImport />
@@ -363,7 +416,7 @@ export default function Webmaster() {
           <DialogHeader><DialogTitle>Create New User</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2"><Label>Full Name</Label><Input placeholder="Jane Doe" value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>Email</Label><Input type="email" placeholder="jane@university.edu" value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Email</Label><Input type="email" placeholder="jane@cookielms.dev" value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} /></div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label>Password</Label>
