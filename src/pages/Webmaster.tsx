@@ -279,10 +279,15 @@ export default function Webmaster() {
       <Tabs defaultValue="users">
         <TabsList>
           <TabsTrigger value="users" className="gap-1.5"><Users className="h-3.5 w-3.5" /> Users</TabsTrigger>
+          <TabsTrigger value="invites" className="gap-1.5"><Sparkles className="h-3.5 w-3.5" /> Magic Links</TabsTrigger>
           <TabsTrigger value="activity" className="gap-1.5"><Activity className="h-3.5 w-3.5" /> Activity Log</TabsTrigger>
           <TabsTrigger value="import" className="gap-1.5"><Cloud className="h-3.5 w-3.5" /> Import</TabsTrigger>
           <TabsTrigger value="settings" className="gap-1.5"><Settings className="h-3.5 w-3.5" /> Settings</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="invites" className="mt-4 space-y-4">
+          <MagicLinksManager />
+        </TabsContent>
 
         <TabsContent value="settings" className="mt-4 space-y-4">
           <Card>
@@ -344,7 +349,7 @@ export default function Webmaster() {
                 <UserCard
                   key={u.id} user={u} isSelf={u.id === currentUser?.id}
                   showPassword={!!showPasswords[u.id]}
-                  onTogglePassword={() => setShowPasswords(p => ({ ...p, [u.id]: !p[u.id] }))}
+                  onTogglePassword={() => requestTogglePassword(u)}
                   onEdit={() => openEdit(u)} onDelete={() => setDeleteConfirm(u)} onResetEmail={() => handleResetEmail(u)}
                 />
               ))}
