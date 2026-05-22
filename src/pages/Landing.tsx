@@ -92,11 +92,11 @@ export default function Landing() {
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" className="flex flex-col h-auto py-3" onClick={() => navigate("/login")}>
                   <span className="text-sm font-medium">Admin</span>
-                  <span className="text-[10px] text-muted-foreground">admin@university.edu</span>
+                  <span className="text-[10px] text-muted-foreground">admin@cookielms.dev</span>
                 </Button>
                 <Button variant="outline" className="flex flex-col h-auto py-3" onClick={() => navigate("/login")}>
                   <span className="text-sm font-medium">Student</span>
-                  <span className="text-[10px] text-muted-foreground">alice@university.edu</span>
+                  <span className="text-[10px] text-muted-foreground">alice@cookielms.dev</span>
                 </Button>
               </div>
             </CardContent>
@@ -104,12 +104,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-6 px-6">
-        <p className="text-center text-xs text-muted-foreground">
-          © 2026 Academic Stream LMS — Mock authentication with 2FA simulation.
-        </p>
-      </footer>
+      <AppFooter />
     </div>
   );
 }
