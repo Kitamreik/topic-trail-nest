@@ -92,13 +92,13 @@ export default function Login() {
       // If no users in storage, check against defaults
       if (users.length === 0) {
         users = [
-          { email: "webmaster@university.edu", password: "webmaster123" },
-          { email: "admin@university.edu", password: "admin123" },
-          { email: "alice@university.edu", password: "student123" },
-          { email: "bob@university.edu", password: "student123" },
-          { email: "carol@university.edu", password: "student123" },
-          { email: "david@university.edu", password: "student123" },
-          { email: "emma@university.edu", password: "student123" },
+          { email: "webmaster@cookielms.dev", password: "webmaster123" },
+          { email: "admin@cookielms.dev", password: "admin123" },
+          { email: "alice@cookielms.dev", password: "student123" },
+          { email: "bob@cookielms.dev", password: "student123" },
+          { email: "carol@cookielms.dev", password: "student123" },
+          { email: "david@cookielms.dev", password: "student123" },
+          { email: "emma@cookielms.dev", password: "student123" },
         ];
       }
       const found = users.find((u: any) => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
