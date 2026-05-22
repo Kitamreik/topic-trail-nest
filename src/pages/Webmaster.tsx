@@ -15,10 +15,12 @@ import { toast } from "sonner";
 import {
   Users, Pencil, Trash2, Mail, Search,
   Shield, ShieldCheck, GraduationCap, UserCog, Clock, Activity,
-  Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud, Settings,
+  Plus, LogIn, LogOut, UserPlus, RefreshCw, Cloud, Settings, Sparkles, Eye, EyeOff,
 } from "lucide-react";
 import GoogleClassroomImport from "@/components/GoogleClassroomImport";
 import FirebaseSettings from "@/components/FirebaseSettings";
+import MagicLinksManager from "@/components/MagicLinksManager";
+import ReauthDialog from "@/components/ReauthDialog";
 
 function RoleIcon({ role }: { role: UserRole }) {
   switch (role) {
@@ -106,9 +108,22 @@ function UserCard({
                 </span>
               </div>
               <div className="flex items-center gap-1.5 mt-2">
-                <span className="text-[11px] text-muted-foreground">
-                  Password hidden — use “Reset password” to issue a new one.
-                </span>
+                {showPassword ? (
+                  <code className="text-[11px] bg-muted px-2 py-0.5 rounded font-mono break-all">
+                    {user.password}
+                  </code>
+                ) : (
+                  <span className="text-[11px] text-muted-foreground">Password hidden</span>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6"
+                  onClick={onTogglePassword}
+                  title={showPassword ? "Hide password" : "Reveal password (re-auth required)"}
+                >
+                  {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                </Button>
               </div>
             </div>
           </div>
@@ -145,7 +160,16 @@ export default function Webmaster() {
   const [editForm, setEditForm] = useState({ name: "", email: "", password: "", role: "student" as UserRole });
   const [deleteConfirm, setDeleteConfirm] = useState<StoredUser | null>(null);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
+  const [reauthTarget, setReauthTarget] = useState<StoredUser | null>(null);
   const [activityLog, setActivityLog] = useState<ActivityEntry[]>(() => getActivityLog());
+
+  const requestTogglePassword = (u: StoredUser) => {
+    if (showPasswords[u.id]) {
+      setShowPasswords(p => ({ ...p, [u.id]: false }));
+    } else {
+      setReauthTarget(u);
+    }
+  };
 
   // Create user state
   const [createOpen, setCreateOpen] = useState(false);
@@ -255,10 +279,15 @@ export default function Webmaster() {
       <Tabs defaultValue="users">
         <TabsList>
           <TabsTrigger value="users" className="gap-1.5"><Users className="h-3.5 w-3.5" /> Users</TabsTrigger>
+          <TabsTrigger value="invites" className="gap-1.5"><Sparkles className="h-3.5 w-3.5" /> Magic Links</TabsTrigger>
           <TabsTrigger value="activity" className="gap-1.5"><Activity className="h-3.5 w-3.5" /> Activity Log</TabsTrigger>
           <TabsTrigger value="import" className="gap-1.5"><Cloud className="h-3.5 w-3.5" /> Import</TabsTrigger>
           <TabsTrigger value="settings" className="gap-1.5"><Settings className="h-3.5 w-3.5" /> Settings</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="invites" className="mt-4 space-y-4">
+          <MagicLinksManager />
+        </TabsContent>
 
         <TabsContent value="settings" className="mt-4 space-y-4">
           <Card>
@@ -320,7 +349,7 @@ export default function Webmaster() {
                 <UserCard
                   key={u.id} user={u} isSelf={u.id === currentUser?.id}
                   showPassword={!!showPasswords[u.id]}
-                  onTogglePassword={() => setShowPasswords(p => ({ ...p, [u.id]: !p[u.id] }))}
+                  onTogglePassword={() => requestTogglePassword(u)}
                   onEdit={() => openEdit(u)} onDelete={() => setDeleteConfirm(u)} onResetEmail={() => handleResetEmail(u)}
                 />
               ))}
@@ -444,6 +473,26 @@ export default function Webmaster() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ReauthDialog
+        open={!!reauthTarget}
+        onOpenChange={(o) => { if (!o) setReauthTarget(null); }}
+        targetName={reauthTarget?.name || ""}
+        onVerified={() => {
+          if (reauthTarget) {
+            setShowPasswords(p => ({ ...p, [reauthTarget.id]: true }));
+            logActivity({
+              action: "user_edit",
+              actor: currentUser?.name || "Unknown",
+              actorRole: currentUser?.role || "unknown",
+              target: reauthTarget.name,
+              details: `Revealed stored password for ${reauthTarget.email}`,
+            });
+            setActivityLog(getActivityLog());
+            setReauthTarget(null);
+          }
+        }}
+      />
     </div>
   );
 }
