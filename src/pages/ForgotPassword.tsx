@@ -19,16 +19,17 @@ export default function ForgotPassword() {
     setError("");
     const users = getAllUsers();
     const found = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (!found) {
-      setError("No account found with this email address.");
-      return;
+    // Always show the same confirmation to prevent account enumeration.
+    // Only generate/store a token when the account actually exists.
+    if (found) {
+      const token = crypto.randomUUID().slice(0, 8);
+      const resets = JSON.parse(localStorage.getItem("academic-stream-resets") || "{}");
+      resets[email.toLowerCase()] = { token, expires: Date.now() + 15 * 60 * 1000 };
+      localStorage.setItem("academic-stream-resets", JSON.stringify(resets));
+      setResetToken(token);
+    } else {
+      setResetToken("");
     }
-    // Generate mock reset token and store it
-    const token = crypto.randomUUID().slice(0, 8);
-    const resets = JSON.parse(localStorage.getItem("academic-stream-resets") || "{}");
-    resets[email.toLowerCase()] = { token, expires: Date.now() + 15 * 60 * 1000 };
-    localStorage.setItem("academic-stream-resets", JSON.stringify(resets));
-    setResetToken(token);
     setSent(true);
   };
 
@@ -43,18 +44,22 @@ export default function ForgotPassword() {
               </div>
             </div>
             <h1 className="font-display text-2xl font-bold">Check Your Email</h1>
-            <p className="text-sm text-muted-foreground">A password reset link has been sent to <strong>{email}</strong></p>
+            <p className="text-sm text-muted-foreground">If an account with that email exists, a password reset link has been sent.</p>
           </div>
 
           <Card>
             <CardContent className="pt-6 space-y-4">
-              <div className="p-3 rounded-lg bg-muted text-center">
-                <p className="text-xs text-muted-foreground mb-1">Mock reset token (shown for demo):</p>
-                <p className="font-mono text-lg font-bold tracking-wider text-primary">{resetToken}</p>
-              </div>
-              <Link to={`/reset-password?email=${encodeURIComponent(email)}`}>
-                <Button className="w-full">Go to Reset Password Page</Button>
-              </Link>
+              {resetToken && (
+                <div className="p-3 rounded-lg bg-muted text-center">
+                  <p className="text-xs text-muted-foreground mb-1">Mock reset token (shown for demo):</p>
+                  <p className="font-mono text-lg font-bold tracking-wider text-primary">{resetToken}</p>
+                </div>
+              )}
+              {resetToken && (
+                <Link to={`/reset-password?email=${encodeURIComponent(email)}`}>
+                  <Button className="w-full">Go to Reset Password Page</Button>
+                </Link>
+              )}
               <Link to="/login">
                 <Button variant="ghost" className="w-full text-sm mt-2">
                   <ArrowLeft className="h-4 w-4 mr-1" /> Back to Sign In

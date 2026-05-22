@@ -212,12 +212,20 @@ export default function Webmaster() {
 
   const openEdit = (u: StoredUser) => {
     setEditUser(u);
-    setEditForm({ name: u.name, email: u.email, password: u.password, role: u.role });
+    // Never pre-populate the existing password. Blank means "keep current password".
+    setEditForm({ name: u.name, email: u.email, password: "", role: u.role });
   };
 
   const handleSaveEdit = () => {
     if (!editUser) return;
-    const result = updateUser(editUser.id, { name: editForm.name.trim(), email: editForm.email.trim(), password: editForm.password, role: editForm.role });
+    const updates: Partial<Pick<StoredUser, "name" | "email" | "password" | "role">> = {
+      name: editForm.name.trim(),
+      email: editForm.email.trim(),
+      role: editForm.role,
+    };
+    // Only update the password when the field is non-empty.
+    if (editForm.password.trim()) updates.password = editForm.password;
+    const result = updateUser(editUser.id, updates);
     if (result.success) { toast.success("User updated"); refresh(); setEditUser(null); }
     else toast.error(result.error);
   };
@@ -405,7 +413,7 @@ export default function Webmaster() {
           <div className="space-y-4 py-2">
             <div className="space-y-2"><Label>Full Name</Label><Input value={editForm.name} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} /></div>
             <div className="space-y-2"><Label>Email</Label><Input type="email" value={editForm.email} onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>Password</Label><Input value={editForm.password} onChange={e => setEditForm(f => ({ ...f, password: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Password</Label><Input type="password" placeholder="Leave blank to keep current password" value={editForm.password} onChange={e => setEditForm(f => ({ ...f, password: e.target.value }))} /></div>
             <div className="space-y-2">
               <Label>Role</Label>
               <Select value={editForm.role} onValueChange={v => setEditForm(f => ({ ...f, role: v as UserRole }))}>
