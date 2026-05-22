@@ -16,6 +16,7 @@ import {
   FolderOpen,
   ClipboardList,
   MessageCircle,
+  Cloud,
 } from "lucide-react";
 import {
   Sidebar,
@@ -56,10 +57,12 @@ const mainNav = [
 const adminNav = [
   { title: "Admin Console", url: "/admin", icon: Shield },
   { title: "Submissions", url: "/submissions", icon: FileText },
+  { title: "Classroom Imports", url: "/classroom-imports", icon: Cloud },
 ];
 
 const webmasterNav = [
   { title: "User Management", url: "/webmaster", icon: Users },
+  { title: "Classroom Imports", url: "/classroom-imports", icon: Cloud },
 ];
 
 export function AppSidebar() {
