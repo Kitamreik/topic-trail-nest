@@ -161,7 +161,7 @@ export default function Webmaster() {
     return () => window.removeEventListener("demo-accounts-changed", handler);
   }, []);
   const toggleDemo = (next: boolean) => {
-    setDemoEnabled(next);
+    setDemoAccountsEnabled(next);
     setDemoEnabledState(next);
     logActivity({
       action: "user_edit",
