@@ -9,6 +9,8 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { GraduationCap, AlertCircle, ShieldCheck, RefreshCw, Eye, EyeOff } from "lucide-react";
 import { AppFooter } from "@/components/AppFooter";
 import { getDemoAccountsEnabled } from "@/lib/demoAccounts";
+import { sendOtpToSlack, getOtpWebhook } from "@/lib/slackWebhook";
+import { toast } from "sonner";
 
 export default function Login() {
   const { login, signup } = useAuth();
@@ -59,23 +61,48 @@ export default function Login() {
   const [twoFAStep, setTwoFAStep] = useState(false);
   const [otpValue, setOtpValue] = useState("");
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
-  const [mockCode] = useState(() => String(Math.floor(100000 + Math.random() * 900000)));
+  const [activeCode, setActiveCode] = useState<string>("");
+  const [showFallbackCode, setShowFallbackCode] = useState(false);
+  const [dispatchStatus, setDispatchStatus] = useState<"sending" | "sent" | "failed" | "">("");
+
+  const dispatchCode = async (code: string, targetEmail: string) => {
+    if (!getOtpWebhook()) {
+      // No channel configured — silently allow on-screen fallback only.
+      setDispatchStatus("failed");
+      return;
+    }
+    setDispatchStatus("sending");
+    const res = await sendOtpToSlack({ email: targetEmail, code });
+    setDispatchStatus(res.sent ? "sent" : "failed");
+  };
 
   const triggerTwoFA = (onSuccess: () => void) => {
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    setActiveCode(code);
+    setShowFallbackCode(false);
     setPendingAction(() => onSuccess);
     setTwoFAStep(true);
     setOtpValue("");
     setError("");
+    void dispatchCode(code, email);
   };
 
   const verifyOTP = () => {
-    if (otpValue === mockCode) {
+    if (otpValue === activeCode) {
       pendingAction?.();
       setTwoFAStep(false);
       setPendingAction(null);
+      setActiveCode("");
+      setShowFallbackCode(false);
     } else {
       setError("Invalid verification code. Please try again.");
     }
+  };
+
+  const handleTechnicalIssues = () => {
+    setShowFallbackCode(true);
+    setError("");
+    toast.success("Verification code displayed below.");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -130,15 +157,26 @@ export default function Login() {
               </div>
             </div>
             <h1 className="font-display text-2xl font-bold">Two-Factor Authentication</h1>
-            <p className="text-sm text-muted-foreground">Enter the 6-digit code to continue</p>
+            <p className="text-sm text-muted-foreground">
+              A verification code has been sent. Enter the 6-digit code to continue.
+            </p>
           </div>
 
           <Card>
             <CardContent className="pt-6 space-y-6">
-              <div className="p-3 rounded-lg bg-muted text-center">
-                <p className="text-xs text-muted-foreground mb-1">Your mock SMS code:</p>
-                <p className="font-mono text-2xl font-bold tracking-[0.3em] text-primary">{mockCode}</p>
-              </div>
+              {dispatchStatus === "sending" && (
+                <p className="text-xs text-center text-muted-foreground">Sending verification code…</p>
+              )}
+              {dispatchStatus === "sent" && (
+                <p className="text-xs text-center text-muted-foreground">Verification code sent. Check your messages.</p>
+              )}
+
+              {showFallbackCode && activeCode && (
+                <div className="p-3 rounded-lg bg-muted text-center">
+                  <p className="text-xs text-muted-foreground mb-1">Your verification code:</p>
+                  <p className="font-mono text-2xl font-bold tracking-[0.3em] text-primary">{activeCode}</p>
+                </div>
+              )}
 
               <div className="flex justify-center">
                 <InputOTP maxLength={6} value={otpValue} onChange={setOtpValue}>
@@ -164,15 +202,17 @@ export default function Login() {
                 Verify Code
               </Button>
 
-              <Button variant="ghost" className="w-full text-sm" onClick={() => { setTwoFAStep(false); setPendingAction(null); setError(""); }}>
+              {!showFallbackCode && (
+                <Button variant="outline" className="w-full text-sm" onClick={handleTechnicalIssues}>
+                  Technical Issues
+                </Button>
+              )}
+
+              <Button variant="ghost" className="w-full text-sm" onClick={() => { setTwoFAStep(false); setPendingAction(null); setError(""); setActiveCode(""); setShowFallbackCode(false); }}>
                 Back to {mode === "login" ? "Sign In" : "Sign Up"}
               </Button>
             </CardContent>
           </Card>
-
-          <p className="text-[10px] text-center text-muted-foreground">
-            ⚠️ This is mock 2FA — the code is shown above for demo purposes.
-          </p>
         </div>
       </div>
     );
@@ -287,9 +327,6 @@ export default function Login() {
           </CardContent>
         </Card>
 
-        <p className="text-[10px] text-center text-muted-foreground">
-          ⚠️ Mock authentication with 2FA simulation — not secure for production.
-        </p>
       </div>
       </div>
       <AppFooter />
