@@ -105,12 +105,9 @@ function UserCard({
                 </span>
               </div>
               <div className="flex items-center gap-1.5 mt-2">
-                <code className="text-[11px] bg-muted px-2 py-0.5 rounded font-mono">
-                  {showPassword ? user.password : "••••••••"}
-                </code>
-                <Button variant="ghost" size="icon" className="h-5 w-5" onClick={onTogglePassword}>
-                  {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-                </Button>
+                <span className="text-[11px] text-muted-foreground">
+                  Password hidden — use “Reset password” to issue a new one.
+                </span>
               </div>
             </div>
           </div>
