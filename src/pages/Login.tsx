@@ -105,8 +105,19 @@ export default function Login() {
       setActiveCode("");
       setShowFallbackCode(false);
     } else {
-      setError("Invalid verification code. Please try again.");
+      setShowInstructorModal(true);
     }
+  };
+
+  const handleInstructorModalConfirm = () => {
+    setShowInstructorModal(false);
+    setTwoFAStep(false);
+    setPendingAction(null);
+    setActiveCode("");
+    setShowFallbackCode(false);
+    setOtpValue("");
+    setError("");
+    setDispatchStatus("");
   };
 
   const handleTechnicalIssues = () => {
