@@ -283,6 +283,8 @@ export default function Admin() {
           </CardContent>
         </Card>
       </div>
+
+      <DemoAccountsToggle />
     </div>
   );
 }
