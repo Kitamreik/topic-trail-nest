@@ -235,6 +235,20 @@ export default function Login() {
             </CardContent>
           </Card>
         </div>
+
+        <AlertDialog open={showInstructorModal} onOpenChange={setShowInstructorModal}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Verification failed</AlertDialogTitle>
+              <AlertDialogDescription>
+                The verification code you entered is incorrect. Please reach out to your instructor for assistance.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={handleInstructorModalConfirm}>Confirm</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     );
   }
