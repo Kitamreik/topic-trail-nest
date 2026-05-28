@@ -300,15 +300,13 @@ export default function Webmaster() {
         </TabsContent>
 
         <TabsContent value="settings" className="mt-4 space-y-4">
-          <Card>
-            <CardHeader>
           <DemoAccountsToggle />
-
 
           <OtpWebhookSettings />
 
           <FirebaseSettings />
         </TabsContent>
+
 
         <TabsContent value="import" className="mt-4 space-y-4">
           <GoogleClassroomImport />
