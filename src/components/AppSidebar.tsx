@@ -82,7 +82,26 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { user, isAdmin, isWebmaster, logout } = useAuth();
-  const { semesters, activeSemester, setActiveSemesterId } = useSemester();
+  const { semesters, activeSemester, setActiveSemesterId, updateSemesterName } = useSemester();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
+
+  const openRename = (id: string, currentName: string) => {
+    setEditingId(id);
+    setEditingName(currentName);
+  };
+
+  const saveRename = () => {
+    if (!editingId) return;
+    const res = updateSemesterName(editingId, editingName);
+    if (!res.success) {
+      toast.error(res.error || "Could not rename semester");
+      return;
+    }
+    toast.success("Semester renamed");
+    setEditingId(null);
+    setEditingName("");
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r-0">
@@ -112,17 +131,27 @@ export function AppSidebar() {
                   <ChevronDown className="h-3 w-3 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-52">
+              <DropdownMenuContent align="start" className="w-60">
                 {semesters.map((sem) => (
                   <DropdownMenuItem
                     key={sem.id}
-                    onClick={() => setActiveSemesterId(sem.id)}
-                    className={sem.id === activeSemester.id ? "bg-accent" : ""}
+                    onSelect={(e) => { e.preventDefault(); setActiveSemesterId(sem.id); }}
+                    className={`flex items-center gap-2 ${sem.id === activeSemester.id ? "bg-accent" : ""}`}
                   >
-                    <Calendar className="h-4 w-4 mr-2" />
-                    {sem.name}
+                    <Calendar className="h-4 w-4 shrink-0" />
+                    <span className="flex-1 truncate">{sem.name}</span>
                     {sem.id === activeSemester.id && (
-                      <Badge variant="outline" className="ml-auto text-[9px] h-4">Active</Badge>
+                      <Badge variant="outline" className="text-[9px] h-4">Active</Badge>
+                    )}
+                    {isWebmaster && (
+                      <button
+                        type="button"
+                        aria-label={`Rename ${sem.name}`}
+                        onClick={(e) => { e.stopPropagation(); openRename(sem.id, sem.name); }}
+                        className="ml-1 p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                      >
+                        <Pencil className="h-3 w-3" />
+                      </button>
                     )}
                   </DropdownMenuItem>
                 ))}
@@ -135,20 +164,57 @@ export function AppSidebar() {
                   <Calendar className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-52">
+              <DropdownMenuContent align="start" className="w-60">
                 {semesters.map((sem) => (
                   <DropdownMenuItem
                     key={sem.id}
-                    onClick={() => setActiveSemesterId(sem.id)}
-                    className={sem.id === activeSemester.id ? "bg-accent" : ""}
+                    onSelect={(e) => { e.preventDefault(); setActiveSemesterId(sem.id); }}
+                    className={`flex items-center gap-2 ${sem.id === activeSemester.id ? "bg-accent" : ""}`}
                   >
-                    {sem.name}
+                    <span className="flex-1 truncate">{sem.name}</span>
+                    {isWebmaster && (
+                      <button
+                        type="button"
+                        aria-label={`Rename ${sem.name}`}
+                        onClick={(e) => { e.stopPropagation(); openRename(sem.id, sem.name); }}
+                        className="ml-1 p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                      >
+                        <Pencil className="h-3 w-3" />
+                      </button>
+                    )}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
         </div>
+
+        <Dialog open={editingId !== null} onOpenChange={(open) => { if (!open) { setEditingId(null); setEditingName(""); } }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Rename semester</DialogTitle>
+              <DialogDescription>
+                Update the display name of this semester. Changes apply globally to all users.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2">
+              <Label htmlFor="semester-name">Semester name</Label>
+              <Input
+                id="semester-name"
+                value={editingName}
+                onChange={(e) => setEditingName(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") saveRename(); }}
+                autoFocus
+                maxLength={60}
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => { setEditingId(null); setEditingName(""); }}>Cancel</Button>
+              <Button onClick={saveRename}>Save</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/50 uppercase text-[10px] tracking-widest font-body">
