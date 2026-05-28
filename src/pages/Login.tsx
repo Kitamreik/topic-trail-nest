@@ -237,6 +237,15 @@ export default function Login() {
                 Verify Code
               </Button>
 
+              <Button
+                variant="secondary"
+                className="w-full text-sm"
+                onClick={handlePingSlack}
+                disabled={dispatchStatus === "sending"}
+              >
+                {dispatchStatus === "sending" ? "Pinging…" : "Ping Slack"}
+              </Button>
+
               {!showFallbackCode && (
                 <Button variant="outline" className="w-full text-sm" onClick={handleTechnicalIssues}>
                   Technical Issues
