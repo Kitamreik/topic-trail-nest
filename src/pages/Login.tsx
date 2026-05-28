@@ -73,6 +73,7 @@ export default function Login() {
   const [activeCode, setActiveCode] = useState<string>("");
   const [showFallbackCode, setShowFallbackCode] = useState(false);
   const [dispatchStatus, setDispatchStatus] = useState<"sending" | "sent" | "failed" | "">("");
+  const [showInstructorModal, setShowInstructorModal] = useState(false);
 
   const dispatchCode = async (code: string, targetEmail: string) => {
     if (!getOtpWebhook()) {
