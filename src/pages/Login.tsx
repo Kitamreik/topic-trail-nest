@@ -6,6 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { GraduationCap, AlertCircle, ShieldCheck, RefreshCw, Eye, EyeOff } from "lucide-react";
 import { AppFooter } from "@/components/AppFooter";
 import { getDemoAccountsEnabled } from "@/lib/demoAccounts";
@@ -64,6 +73,7 @@ export default function Login() {
   const [activeCode, setActiveCode] = useState<string>("");
   const [showFallbackCode, setShowFallbackCode] = useState(false);
   const [dispatchStatus, setDispatchStatus] = useState<"sending" | "sent" | "failed" | "">("");
+  const [showInstructorModal, setShowInstructorModal] = useState(false);
 
   const dispatchCode = async (code: string, targetEmail: string) => {
     if (!getOtpWebhook()) {
@@ -95,8 +105,19 @@ export default function Login() {
       setActiveCode("");
       setShowFallbackCode(false);
     } else {
-      setError("Invalid verification code. Please try again.");
+      setShowInstructorModal(true);
     }
+  };
+
+  const handleInstructorModalConfirm = () => {
+    setShowInstructorModal(false);
+    setTwoFAStep(false);
+    setPendingAction(null);
+    setActiveCode("");
+    setShowFallbackCode(false);
+    setOtpValue("");
+    setError("");
+    setDispatchStatus("");
   };
 
   const handleTechnicalIssues = () => {
@@ -214,6 +235,20 @@ export default function Login() {
             </CardContent>
           </Card>
         </div>
+
+        <AlertDialog open={showInstructorModal} onOpenChange={setShowInstructorModal}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Verification failed</AlertDialogTitle>
+              <AlertDialogDescription>
+                The verification code you entered is incorrect. Please reach out to your instructor for assistance.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={handleInstructorModalConfirm}>Confirm</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     );
   }
