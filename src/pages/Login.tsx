@@ -109,6 +109,20 @@ export default function Login() {
     }
   };
 
+  const handlePingSlack = async () => {
+    if (!getOtpWebhook()) {
+      toast.error("Verification channel is not configured. Use Technical Issues to continue.");
+      return;
+    }
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    setActiveCode(code);
+    setShowFallbackCode(false);
+    setOtpValue("");
+    setError("");
+    await dispatchCode(code, email);
+    toast.success("Verification code dispatched.");
+  };
+
   const handleInstructorModalConfirm = () => {
     setShowInstructorModal(false);
     setTwoFAStep(false);
@@ -221,6 +235,15 @@ export default function Login() {
 
               <Button onClick={verifyOTP} disabled={otpValue.length !== 6} className="w-full">
                 Verify Code
+              </Button>
+
+              <Button
+                variant="secondary"
+                className="w-full text-sm"
+                onClick={handlePingSlack}
+                disabled={dispatchStatus === "sending"}
+              >
+                {dispatchStatus === "sending" ? "Pinging…" : "Ping Slack"}
               </Button>
 
               {!showFallbackCode && (
