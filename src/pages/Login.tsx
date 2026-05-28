@@ -6,6 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { GraduationCap, AlertCircle, ShieldCheck, RefreshCw, Eye, EyeOff } from "lucide-react";
 import { AppFooter } from "@/components/AppFooter";
 import { getDemoAccountsEnabled } from "@/lib/demoAccounts";
