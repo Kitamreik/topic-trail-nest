@@ -22,6 +22,7 @@ import FirebaseSettings from "@/components/FirebaseSettings";
 import OtpWebhookSettings from "@/components/OtpWebhookSettings";
 import MagicLinksManager from "@/components/MagicLinksManager";
 import ReauthDialog from "@/components/ReauthDialog";
+import DemoAccountsToggle from "@/components/DemoAccountsToggle";
 
 function RoleIcon({ role }: { role: UserRole }) {
   switch (role) {
@@ -300,38 +301,13 @@ export default function Webmaster() {
         </TabsContent>
 
         <TabsContent value="settings" className="mt-4 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Settings className="h-4 w-4 text-primary" /> Login Page Settings
-              </CardTitle>
-              <CardDescription>
-                Control what appears on the public sign-in page.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-start justify-between gap-4 rounded-lg border border-border p-4">
-                <div className="space-y-1">
-                  <Label htmlFor="demo-toggle" className="text-sm font-medium">
-                    Show demo account quick-login buttons
-                  </Label>
-                  <p className="text-xs text-muted-foreground">
-                    When enabled, the login page displays one-click buttons for Webmaster, Admin, and Student demo accounts. Disable this for production-like deployments.
-                  </p>
-                </div>
-                <Switch
-                  id="demo-toggle"
-                  checked={demoEnabled}
-                  onCheckedChange={toggleDemo}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          <DemoAccountsToggle />
 
           <OtpWebhookSettings />
 
           <FirebaseSettings />
         </TabsContent>
+
 
         <TabsContent value="import" className="mt-4 space-y-4">
           <GoogleClassroomImport />
