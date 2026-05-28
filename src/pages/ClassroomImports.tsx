@@ -41,6 +41,10 @@ function StatRow({ label, icon, created, updated, skipped }: {
 
 export default function ClassroomImports() {
   const [history, setHistory] = useState<ClassroomImportRecord[]>(() => getImportHistory());
+  const [search, setSearch] = useState("");
+  const [courseFilter, setCourseFilter] = useState<string>("all");
+  const [semesterFilter, setSemesterFilter] = useState<string>("all");
+  const [modeFilter, setModeFilter] = useState<string>("all");
 
   useEffect(() => {
     const refresh = () => setHistory(getImportHistory());
@@ -51,6 +55,45 @@ export default function ClassroomImports() {
       window.removeEventListener("storage", refresh);
     };
   }, []);
+
+  const uniqueCourses = useMemo(() => {
+    const map = new Map<string, string>();
+    history.forEach(h => h.courses.forEach(c => map.set(c.id, c.name)));
+    return Array.from(map, ([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
+  }, [history]);
+
+  const uniqueSemesters = useMemo(() => {
+    const s = new Set(history.map(h => h.semesterName));
+    return Array.from(s).sort();
+  }, [history]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return history.filter(rec => {
+      if (modeFilter !== "all" && rec.mode !== modeFilter) return false;
+      if (semesterFilter !== "all" && rec.semesterName !== semesterFilter) return false;
+      if (courseFilter !== "all" && !rec.courses.some(c => c.id === courseFilter)) return false;
+      if (q) {
+        const hay = [
+          rec.actor,
+          rec.semesterName,
+          rec.mode,
+          ...rec.courses.map(c => c.name),
+        ].join(" ").toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [history, search, courseFilter, semesterFilter, modeFilter]);
+
+  const hasActiveFilter = search.trim() !== "" || courseFilter !== "all" || semesterFilter !== "all" || modeFilter !== "all";
+  const clearFilters = () => {
+    setSearch("");
+    setCourseFilter("all");
+    setSemesterFilter("all");
+    setModeFilter("all");
+  };
+
 
   const totalImports = history.length;
   const totalItems = history.reduce((sum, h) => sum + totalChanged(h.result), 0);
