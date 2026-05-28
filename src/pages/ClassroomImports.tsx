@@ -141,12 +141,76 @@ export default function ClassroomImports() {
           )}
         </CardHeader>
         <CardContent className="space-y-3">
+          {history.length > 0 && (
+            <div className="space-y-3 pb-2">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by course, actor, semester…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-8"
+                />
+              </div>
+              <div className="grid gap-2 sm:grid-cols-3">
+                <div className="space-y-1">
+                  <Label className="text-[11px] text-muted-foreground">Course</Label>
+                  <Select value={courseFilter} onValueChange={setCourseFilter}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All courses</SelectItem>
+                      {uniqueCourses.map(c => (
+                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[11px] text-muted-foreground">Semester</Label>
+                  <Select value={semesterFilter} onValueChange={setSemesterFilter}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All semesters</SelectItem>
+                      {uniqueSemesters.map(s => (
+                        <SelectItem key={s} value={s}>{s}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[11px] text-muted-foreground">Mode</Label>
+                  <Select value={modeFilter} onValueChange={setModeFilter}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All modes</SelectItem>
+                      <SelectItem value="merge">Merge</SelectItem>
+                      <SelectItem value="overwrite">Overwrite</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] text-muted-foreground">
+                  Showing {filtered.length} of {history.length} import{history.length === 1 ? "" : "s"}
+                </p>
+                {hasActiveFilter && (
+                  <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={clearFilters}>
+                    <X className="h-3 w-3 mr-1" /> Clear filters
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
           {history.length === 0 ? (
             <p className="text-sm text-muted-foreground py-6 text-center">
               No imports yet. Use the importer above to bring your first course in.
             </p>
+          ) : filtered.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-6 text-center">
+              No imports match the current filters.
+            </p>
           ) : (
-            history.map(rec => (
+            filtered.map(rec => (
               <div key={rec.id} className="border rounded-lg p-4 space-y-3">
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div className="space-y-1 min-w-0">
