@@ -13,6 +13,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip as RTooltip, Cell,
 } from "recharts";
 import { Users, CheckCircle, MessageSquare, BookOpen, Search, Pencil, Trash2, Save, X } from "lucide-react";
+import DemoAccountsToggle from "@/components/DemoAccountsToggle";
 
 export default function Admin() {
   const {
