@@ -9,8 +9,10 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Plus, Trash2, MessageCircle, Send, Pencil, Check, X } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Trash2, MessageCircle, Send, Pencil, Check, X, Presentation } from "lucide-react";
 import { format } from "date-fns";
+import Whiteboard from "@/components/Whiteboard";
 
 export default function Discussions() {
   const { discussions, addDiscussion, addReply, updateReply, deleteDiscussion } = useLMS();
