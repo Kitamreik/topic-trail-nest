@@ -166,6 +166,12 @@ export default function Discussions() {
           ))}
         </div>
       )}
+        </TabsContent>
+
+        <TabsContent value="whiteboard" className="mt-4">
+          <Whiteboard />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
