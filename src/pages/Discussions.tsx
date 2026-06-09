@@ -50,25 +50,33 @@ export default function Discussions() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
-      <div className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <h1 className="font-display text-xl sm:text-2xl font-bold">Discussions</h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">Engage with your classmates.</p>
-        </div>
-        <Button size="sm" className="shrink-0" onClick={() => setDialogOpen(true)}><Plus className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">New Discussion</span><span className="sm:hidden">New</span></Button>
+    <div className="max-w-5xl mx-auto space-y-4 sm:space-y-6">
+      <div className="min-w-0">
+        <h1 className="font-display text-xl sm:text-2xl font-bold">Discussions</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Engage with your classmates through threads or a shared whiteboard.</p>
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Start a Discussion</DialogTitle></DialogHeader>
-          <div className="space-y-3">
-            <Input placeholder="Discussion title" value={title} onChange={(e) => setTitle(e.target.value)} />
-            <Textarea placeholder="What's on your mind?" rows={3} value={body} onChange={(e) => setBody(e.target.value)} />
-            <Button onClick={handleCreate} className="w-full">Post Discussion</Button>
+      <Tabs defaultValue="threads" className="w-full">
+        <TabsList>
+          <TabsTrigger value="threads"><MessageCircle className="h-4 w-4 mr-1.5" /> Threads</TabsTrigger>
+          <TabsTrigger value="whiteboard"><Presentation className="h-4 w-4 mr-1.5" /> Whiteboard</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="threads" className="space-y-4 sm:space-y-6 mt-4">
+          <div className="flex items-center justify-end">
+            <Button size="sm" className="shrink-0" onClick={() => setDialogOpen(true)}><Plus className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">New Discussion</span><span className="sm:hidden">New</span></Button>
           </div>
-        </DialogContent>
-      </Dialog>
+
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogContent>
+              <DialogHeader><DialogTitle>Start a Discussion</DialogTitle></DialogHeader>
+              <div className="space-y-3">
+                <Input placeholder="Discussion title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <Textarea placeholder="What's on your mind?" rows={3} value={body} onChange={(e) => setBody(e.target.value)} />
+                <Button onClick={handleCreate} className="w-full">Post Discussion</Button>
+              </div>
+            </DialogContent>
+          </Dialog>
 
       {discussions.length === 0 ? (
         <Card><CardContent className="p-8 text-center text-muted-foreground">No discussions yet. Start one!</CardContent></Card>
