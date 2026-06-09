@@ -47,7 +47,7 @@ export default function DemoAccountsToggle() {
           Control what appears on the public sign-in page.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-3">
         <div className="flex items-start justify-between gap-4 rounded-lg border border-border p-4">
           <div className="space-y-1">
             <Label htmlFor="demo-toggle" className="text-sm font-medium">
@@ -59,6 +59,18 @@ export default function DemoAccountsToggle() {
           </div>
           <Switch id="demo-toggle" checked={enabled} onCheckedChange={toggle} />
         </div>
+        <Button
+          variant={enabled ? "destructive" : "outline"}
+          size="sm"
+          className="w-full"
+          onClick={() => toggle(!enabled)}
+        >
+          {enabled ? (
+            <><EyeOff className="h-4 w-4 mr-2" /> Disable demo on front page</>
+          ) : (
+            <><Eye className="h-4 w-4 mr-2" /> Enable demo on front page</>
+          )}
+        </Button>
       </CardContent>
     </Card>
   );
